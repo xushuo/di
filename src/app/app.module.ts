@@ -8,19 +8,37 @@ import { Product1Component } from './product1/product1.component';
 import {ProductService} from "./shared/product.service";
 import { Product2Component } from './product2/product2.component';
 import {LoggerService} from "app/shared/logger.service";
+import { Product3Component } from './product3/product3.component';
+import {AnotherProductService} from "./shared/another-product.service";
 
 @NgModule({
   declarations: [
     AppComponent,
     Product1Component,
-    Product2Component
+    Product2Component,
+    Product3Component
   ],
   imports: [
     BrowserModule,
     FormsModule,
     HttpModule
   ],
-  providers: [ProductService,LoggerService],
+  providers: [{
+    provide:ProductService,
+    useFactory: (logger:LoggerService,appConfig)=>{
+      if(appConfig.isDev){
+        return new ProductService(logger)
+      }else {
+        return new AnotherProductService(logger)
+      }
+    },
+    deps:[LoggerService,"APP_CONFIG"]
+  },LoggerService,{
+    provide:"APP_CONFIG",
+    useValue: {
+      isDev:false
+    }
+  }],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
