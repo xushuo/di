@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, Injector, OnInit} from '@angular/core';
 import {Product, ProductService} from "../shared/product.service";
 
 @Component({
@@ -7,9 +7,11 @@ import {Product, ProductService} from "../shared/product.service";
   styleUrls: ['./product3.component.css']
 })
 export class Product3Component implements OnInit {
-
+  private productService:ProductService   //手工注入 不推荐
   product :Product;
-  constructor(private productService:ProductService) { }
+  constructor(private injector:Injector) {
+    this.productService = injector.get(ProductService);
+  }
 
   ngOnInit() {
     this.product=this.productService.getProduct();
